@@ -232,9 +232,9 @@ function SCORE:StreamToClients()
 
    -- divide into happy lil bits.
    -- this was necessary with user messages, now it's
-   -- a just-in-case thing if a round somehow manages to be > 64K
+   -- a just-in-case thing if a round somehow manages to be > 60K
    local cut = {}
-   local max = 65500
+   local max = 60000
    while #s != 0 do
       local bit = string.sub(s, 1, max - 1)
       table.insert(cut, bit)
@@ -244,9 +244,11 @@ function SCORE:StreamToClients()
 
    local parts = #cut
    for k, bit in pairs(cut) do
-      net.Start("TTT_ReportStream")
-      net.WriteBit((k != parts)) -- continuation bit, 1 if there's more coming
-      net.WriteString(bit)
-      net.Broadcast()
+      timer.Simple((k - 1) * 1, function()
+         net.Start("TTT_ReportStream")
+         net.WriteBit((k != parts)) -- continuation bit, 1 if there's more coming
+         net.WriteString(bit)
+         net.Broadcast()
+      end)
    end
 end
