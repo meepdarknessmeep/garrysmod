@@ -132,12 +132,19 @@ function ents.TTT.ReplaceEntities()
    ents.TTT.RemoveRagdolls()
 end
 
+local TransmitStateUpdate = function(gm, ent)
+   if ent:IsWeapon() then
+      hook.Run("TTTTransmitStateUpdate", ent)
+   end
+end
 
 local cls = "" -- avoid allocating
 local sub = string.sub
 local function ReplaceOnCreated(s, ent)
    -- Invalid ents are of no use anyway
    if not ent:IsValid() then return end
+
+   TransmitStateUpdate(s, ent)
 
    cls = ent:GetClass()
 
@@ -148,8 +155,6 @@ local function ReplaceOnCreated(s, ent)
    end
 end
 
-local noop = util.noop
-
 GM.OnEntityCreated = ReplaceOnCreated
 
 -- Helper so we can easily turn off replacement stuff when we don't need it
@@ -157,7 +162,7 @@ function ents.TTT.SetReplaceChecking(state)
    if state then
       GAMEMODE.OnEntityCreated = ReplaceOnCreated
    else
-      GAMEMODE.OnEntityCreated = noop
+      GAMEMODE.OnEntityCreated = TransmitStateUpdate
    end
 end
 

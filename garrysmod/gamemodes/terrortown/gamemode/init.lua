@@ -233,6 +233,30 @@ function GM:InitPostEntity()
    WEPS.ForcePrecache()
 end
 
+function GM:TTTTransmitStateUpdate(wep)
+   for _, ply in pairs(player.GetAll()) do
+      wep:SetPreventTransmit(ply, true)
+   end
+end
+
+function GM:PlayerSwitchWeapon(holder, oldwep, newwep)
+  
+     for _, ply in pairs(player.GetAll()) do
+        if ply == holder then
+           continue
+        end
+        if IsValid(oldwep) then
+           oldwep:SetPreventTransmit(ply, true)
+        end
+        if IsValid(newwep) then
+           newwep:SetPreventTransmit(ply, false)
+        end
+     end
+     
+     return self.BaseClass.PlayerSwitchWeapon(holder, oldwep, newwep)
+  
+  end
+
 -- Convar replication is broken in gmod, so we do this.
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
