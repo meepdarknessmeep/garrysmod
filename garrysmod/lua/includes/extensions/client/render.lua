@@ -58,12 +58,11 @@ end
 -----------------------------------------------------------]]   
 function render.CopyTexture( from, to )
 
-	local OldRT = render.GetRenderTarget();
-		
-		render.SetRenderTarget( from )
+	render.PushRenderTarget( from )
+
 		render.CopyRenderTargetToTexture( to )
-		
-	render.SetRenderTarget( OldRT )
+
+	render.PopRenderTarget()
 
 end
 
