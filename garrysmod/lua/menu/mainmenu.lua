@@ -453,7 +453,11 @@ end )
 --
 -- Initialize
 --
-timer.Simple( 0, function()
+
+local function InitializeMenu()
+	if IsValid( pnlMainMenu ) then
+		pnlMainMenu:Remove()
+	end
 
 	pnlMainMenu = vgui.Create( "MainMenuPanel" )
 	pnlMainMenu:Call( "UpdateVersion( '" .. VERSIONSTR:JavascriptSafe() .. "', '" .. BRANCH:JavascriptSafe() .. "' )" )
@@ -462,5 +466,7 @@ timer.Simple( 0, function()
 	LanguageChanged( language )
 
 	hook.Run( "GameContentChanged" )
+end
 
-end )
+timer.Simple( 0, InitializeMenu )
+concommand.Add( "menu_reload", InitializeMenu )
